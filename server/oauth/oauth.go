@@ -3,7 +3,6 @@ package oauth
 import (
 	"bytes"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -11,20 +10,20 @@ import (
 )
 
 const (
-	PAYPAL_API_BASE = "https://api.paypal.com" // Replace this with your actual API base URL
-	CLIENT_ID       = "your_client_id"         // Replace this with your actual client ID
-	APP_SECRET      = "your_app_secret"        // Replace this with your actual app secret
+	PAYPAL_API_BASE = "https://api.sandbox.paypal.com"                                                   // Replace with the actual PayPal API base URL
+	CLIENT_ID       = "AfO8JyqOwNtRMq-3X9jr583UkVF10hxeG9Ifku6354w4Xh6eNOSClKl_6lLGi8FEDxseWsDwd9TdmGFG" // Replace with your PayPal client ID
+	APP_SECRET      = "EBv2wZGG1L46fHNC7AZJcq_De-OqJrEjRarQeBiLnHBIoILGiNfgphPnxrwMCNIVSj_xpMQed1bHpVMI" // Replace with your PayPal app secret
 )
 
-func GetAccessToken() (map[string]interface{}, error) {
+func GetAccessToken() (string, error) {
 	credentials := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", CLIENT_ID, APP_SECRET)))
 
-	form := url.Values{}
-	form.Set("grant_type", "client_credentials")
+	data := url.Values{}
+	data.Set("grant_type", "client_credentials")
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/v1/oauth2/token", PAYPAL_API_BASE), bytes.NewBufferString(form.Encode()))
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/v1/oauth2/token", PAYPAL_API_BASE), bytes.NewBufferString(data.Encode()))
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	req.Header.Set("Accept", "application/json")
@@ -34,29 +33,23 @@ func GetAccessToken() (map[string]interface{}, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	var data map[string]interface{}
-	if err := json.Unmarshal(body, &data); err != nil {
-		return nil, err
-	}
-
-	return data, nil
+	return string(respBody), nil
 }
 
-// func ReadAccessToken() {
+// func main() {
 // 	accessToken, err := getAccessToken()
 // 	if err != nil {
-// 		fmt.Println("Error getting access token:", err)
+// 		fmt.Println("Error:", err)
 // 		return
 // 	}
-
 // 	fmt.Println("Access Token:", accessToken)
 // }

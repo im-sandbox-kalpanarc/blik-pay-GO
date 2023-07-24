@@ -11,12 +11,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// const (
-// 	PAYPAL_API_BASE = "https://api.paypal.com" // Replace this with your actual API base URL
-// )
+const (
+	PAYPAL_API_BASE = "https://api.sandbox.paypal.com" // Replace this with your actual API base URL
+)
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "../client/index.html")
+	http.ServeFile(w, r, "./static/index.html")
 }
 
 func captureHandler(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +25,7 @@ func captureHandler(w http.ResponseWriter, r *http.Request) {
 	// Implement your logic to get access_token using the getAccessToken() function
 	// The getAccessToken() function should return the access_token value.
 	// For brevity, I am assuming you have a function that retrieves the access_token.
-	access_token := oauth.GetAccessToken()
+	access_token, err := oauth.GetAccessToken()
 
 	url := fmt.Sprintf("%s/v2/checkout/orders/%s/capture", PAYPAL_API_BASE, orderID)
 	req, err := http.NewRequest("POST", url, nil)
@@ -37,7 +37,7 @@ func captureHandler(w http.ResponseWriter, r *http.Request) {
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("Authorization", "Bearer "+access_token.accessToken)
+	req.Header.Set("Authorization", "Bearer "+access_token)
 
 	client := http.DefaultClient
 	resp, err := client.Do(req)
