@@ -1,27 +1,41 @@
 package main
 
-import "os"
+import (
+	"fmt"
+	"os"
 
-var (
-	NODE_ENV   = os.Getenv("NODE_ENV")
-	CLIENT_ID  = os.Getenv("CLIENT_ID")
-	APP_SECRET = os.Getenv("APP_SECRET")
+	"github.com/joho/godotenv"
 )
 
-func main() {
-	isProd := NODE_ENV == "production"
+var (
+	isProd        bool
+	paypalAPIBase string
+	clientID      string
+	appSecret     string
+)
 
-	var PAYPAL_API_BASE string
-	if isProd {
-		PAYPAL_API_BASE = "https://api.paypal.com"
-	} else {
-		PAYPAL_API_BASE = "https://api.sandbox.paypal.com"
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading .env file:", err)
 	}
 
-	// Now you can use isProd, PAYPAL_API_BASE, CLIENT_ID, and APP_SECRET in your code as needed.
-	// For example, you can print them:
-	println("isProd:", isProd)
-	println("PAYPAL_API_BASE:", PAYPAL_API_BASE)
-	println("CLIENT_ID:", CLIENT_ID)
-	println("APP_SECRET:", APP_SECRET)
+	isProd = os.Getenv("NODE_ENV") == "production"
+	paypalAPIBase = getPaypalAPIBase()
+	clientID = os.Getenv("CLIENT_ID")
+	appSecret = os.Getenv("APP_SECRET")
+}
+
+func getPaypalAPIBase() string {
+	if isProd {
+		return "https://api.paypal.com"
+	}
+	return "https://api.sandbox.paypal.com"
+}
+
+func Config() {
+	fmt.Println("isProd:", isProd)
+	fmt.Println("PAYPAL_API_BASE:", paypalAPIBase)
+	fmt.Println("CLIENT_ID:", clientID)
+	fmt.Println("APP_SECRET:", appSecret)
 }
