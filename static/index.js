@@ -70,8 +70,7 @@ paypal
         .then((data) => {
           swal(
             "Order Captured!",
-            `Id: ${data.id}, ${Object.keys(data.payment_source)[0]}, ${
-              data.purchase_units[0].payments.captures[0].amount.currency_code
+            `Id: ${data.id}, ${Object.keys(data.payment_source)[0]}, ${data.purchase_units[0].payments.captures[0].amount.currency_code
             } ${data.purchase_units[0].payments.captures[0].amount.value}`,
             "success"
           );

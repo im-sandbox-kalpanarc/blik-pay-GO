@@ -16,7 +16,7 @@ const (
 	APP_SECRET      = "your_app_secret"        // Replace this with your actual app secret
 )
 
-func getAccessToken() (map[string]interface{}, error) {
+func GetAccessToken() (map[string]interface{}, error) {
 	credentials := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", CLIENT_ID, APP_SECRET)))
 
 	form := url.Values{}
@@ -51,12 +51,12 @@ func getAccessToken() (map[string]interface{}, error) {
 	return data, nil
 }
 
-func ReadAccessToken() {
-	accessToken, err := getAccessToken()
-	if err != nil {
-		fmt.Println("Error getting access token:", err)
-		return
-	}
+// func ReadAccessToken() {
+// 	accessToken, err := getAccessToken()
+// 	if err != nil {
+// 		fmt.Println("Error getting access token:", err)
+// 		return
+// 	}
 
-	fmt.Println("Access Token:", accessToken)
-}
+// 	fmt.Println("Access Token:", accessToken)
+// }

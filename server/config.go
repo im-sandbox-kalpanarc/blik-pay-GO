@@ -20,7 +20,7 @@ func init() {
 		fmt.Println("Error loading .env file:", err)
 	}
 
-	isProd = os.Getenv("NODE_ENV") == "production"
+	isProd = os.Getenv("NODE_ENV") == "development"
 	paypalAPIBase = getPaypalAPIBase()
 	clientID = os.Getenv("CLIENT_ID")
 	appSecret = os.Getenv("APP_SECRET")
